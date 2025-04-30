@@ -1,67 +1,335 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Финансовый менеджер</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансовый менеджер | VTB Стиль</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        .tab { display: none; }
-        .active { display: block; }
-        input, select { margin: 10px 0; width: 100%; padding: 8px; }
-        button { background: #0088cc; color: white; border: none; padding: 10px; cursor: pointer; }
+        /* Основные стили */
+        :root {
+            --vtb-blue: #0033a0;
+            --vtb-light-blue: #0061d5;
+            --vtb-white: #ffffff;
+            --vtb-gray: #f5f5f6;
+            --vtb-dark-gray: #d9d9d9;
+            --vtb-text: #333333;
+            --vtb-green: #00a876;
+            --vtb-red: #e30613;
+            --vtb-gradient: linear-gradient(90deg, #0033a0 0%, #0061d5 100%);
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--vtb-gray);
+            color: var(--vtb-text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Шапка в стиле VTB */
+        .header {
+            background: var(--vtb-gradient);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        /* Контейнер приложения */
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px 20px;
+        }
+
+        /* Карточки в стиле VTB */
+        .card {
+            background-color: var(--vtb-white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Кнопки */
+        .btn {
+            background: var(--vtb-gradient);
+            color: var(--vtb-white);
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px 0;
+            width: 100%;
+            text-align: center;
+            display: block;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: var(--vtb-white);
+            color: var(--vtb-blue);
+            border: 1px solid var(--vtb-blue);
+        }
+
+        /* Поля ввода */
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 10px 0;
+            border: 1px solid var(--vtb-dark-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--vtb-blue);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 51, 160, 0.2);
+        }
+
+        /* Вкладки */
+        .tab {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Баланс */
+        .balance {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--vtb-blue);
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Список операций */
+        .transaction-list {
+            margin-top: 15px;
+        }
+
+        .transaction-item {
+            background-color: var(--vtb-white);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .transaction-item:hover {
+            transform: translateX(5px);
+        }
+
+        .income {
+            border-left: 4px solid var(--vtb-green);
+        }
+
+        .expense {
+            border-left: 4px solid var(--vtb-red);
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .transaction-income {
+            color: var(--vtb-green);
+        }
+
+        .transaction-expense {
+            color: var(--vtb-red);
+        }
+
+        /* Настройки */
+        .settings-form {
+            background-color: var(--vtb-white);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        /* Иконки */
+        .icon {
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 0 15px 15px;
+            }
+
+            .btn {
+                padding: 12px 15px;
+            }
+
+            .balance {
+                font-size: 28px;
+            }
+        }
+
+        /* Дополнительные элементы */
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--vtb-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .section-title {
+            color: var(--vtb-blue);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
-    <div id="main-tab" class="tab active">
-        <h2>Баланс: <span id="balance">0 ₽</span></h2>
-        <button onclick="showTab('add-transaction')">Добавить операцию</button>
-        <button onclick="showTab('history')">История</button>
-        <button onclick="showTab('deposit')">Вклады</button>
+    <div class="header">
+        <h1>Финансовый менеджер</h1>
     </div>
 
-    <div id="add-transaction" class="tab">
-        <h3>Добавить операцию</h3>
-        <select id="type">
-            <option value="income">Доход</option>
-            <option value="expense">Расход</option>
-        </select>
-        <input type="number" id="amount" placeholder="Сумма">
-        <input type="text" id="category" placeholder="Категория">
-        <button onclick="saveTransaction()">Сохранить</button>
-        <button onclick="showTab('main-tab')">Назад</button>
-    </div>
+    <div class="app-container">
+        <div id="main-tab" class="tab active">
+            <div class="card">
+                <div class="balance">Баланс: <span id="balance">0 ₽</span></div>
 
-    <div id="history" class="tab">
-        <h3>История операций</h3>
-        <div id="transactions-list"></div>
-        <button onclick="showTab('main-tab')">Назад</button>
-    </div>
+                <button class="btn" onclick="showTab('add-transaction')">
+                    Добавить операцию
+                </button>
 
-    <div id="deposit" class="tab">
-        <h3>Калькулятор вкладов</h3>
-        <input type="number" id="deposit-amount" placeholder="Сумма вклада">
-        <input type="number" id="deposit-rate" placeholder="Годовая ставка (%)">
-        <input type="number" id="deposit-period" placeholder="Срок (мес.)">
-        <button onclick="calculateDeposit()">Рассчитать</button>
-        <p id="deposit-result"></p>
-        <button onclick="showTab('main-tab')">Назад</button>
-    </div>
+                <button class="btn" onclick="showTab('history')">
+                    История операций
+                </button>
 
+                <button class="btn btn-secondary" onclick="showTab('deposit')">
+                    Вклады и проценты
+                </button>
+
+                <button class="btn" onclick="showTab('settings')" style="margin-top: 20px;">
+                    Настройки
+                </button>
+            </div>
+        </div>
+
+        <!-- Остальные вкладки остаются без изменений -->
+        <div id="add-transaction" class="tab">
+            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+            <div class="card">
+                <h2 class="section-title">Добавить операцию</h2>
+
+                <select class="form-control" id="type">
+                    <option value="income">Доход</option>
+                    <option value="expense">Расход</option>
+                </select>
+
+                <input type="number" class="form-control" id="amount" placeholder="Сумма">
+
+                <input type="text" class="form-control" id="category" placeholder="Категория">
+
+                <button class="btn" onclick="saveTransaction()">Сохранить</button>
+            </div>
+        </div>
+
+        <div id="history" class="tab">
+            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+            <div class="card">
+                <h2 class="section-title">История операций</h2>
+                <div id="transactions-list" class="transaction-list"></div>
+            </div>
+        </div>
+
+        <div id="deposit" class="tab">
+            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+            <div class="card">
+                <h2 class="section-title">Калькулятор вкладов</h2>
+
+                <input type="number" class="form-control" id="deposit-amount" placeholder="Сумма вклада">
+
+                <input type="number" class="form-control" id="deposit-rate" placeholder="Годовая ставка (%)">
+
+                <input type="number" class="form-control" id="deposit-period" placeholder="Срок (мес.)">
+
+                <button class="btn" onclick="calculateDeposit()">Рассчитать</button>
+
+                <div id="deposit-result" style="margin-top: 20px; padding: 15px; background-color: var(--vtb-gray); border-radius: 8px;"></div>
+            </div>
+        </div>
+
+        <div id="settings" class="tab">
+            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+            <div class="card">
+                <h2 class="section-title">Настройки</h2>
+
+                <input type="number" class="form-control" id="initial-balance" placeholder="Начальный баланс">
+
+                <button class="btn" onclick="saveSettings()">Сохранить настройки</button>
+            </div>
+        </div>
+    </div>
     <script>
         let user = null;
-
+        let initialBalance = 0;
         // Инициализация WebApp
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
         user = Telegram.WebApp.initDataUnsafe.user;
-
+        window.onload = function() {
+            const savedBalance = localStorage.getItem('initialBalance');
+            if (savedBalance) {
+                document.getElementById('initial-balance').value = savedBalance;
+            }
+            // Остальной код инициализации...
+        };
         // Загрузка баланса
+
         async function loadBalance() {
             const response = await fetch(`http://localhost:5000/api/transactions?user_id=${user.id}`);
             const transactions = await response.json();
-            const balance = transactions.reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
-            document.getElementById('balance').textContent = `${balance.toFixed(2)} ₽`;
+
+            // Загружаем начальный баланс из localStorage
+            const savedBalance = localStorage.getItem('initialBalance');
+            initialBalance = savedBalance ? parseFloat(savedBalance) : 0;
+
+            const calculatedBalance = transactions.reduce((acc, t) =>
+                t.type === 'income' ? acc + t.amount : acc - t.amount, initialBalance);
+
+            document.getElementById('balance').textContent = `${calculatedBalance.toFixed(2)} ₽`;
         }
 
         // Показ вкладок
@@ -118,7 +386,21 @@
                 Доход: ${(result - amount).toFixed(2)} ₽
             `;
         }
+        function saveSettings() {
+            initialBalance = parseFloat(document.getElementById('initial-balance').value) || 0;
+            localStorage.setItem('initialBalance', initialBalance);
+            await fetch('http://localhost:5000/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: user.id,
+                    initial_balance: initialBalance
+                })
+            });
 
+            showTab('main-tab');
+            loadBalance();
+        }
         // Первоначальная загрузка
         loadBalance();
     </script>
