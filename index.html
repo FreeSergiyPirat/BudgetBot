@@ -6,7 +6,6 @@
     <title>Финансовый менеджер | VTB Стиль</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Основные стили */
         :root {
             --vtb-blue: #0033a0;
             --vtb-light-blue: #0061d5;
@@ -28,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Шапка в стиле VTB */
         .header {
             background: var(--vtb-gradient);
             color: white;
@@ -39,20 +37,12 @@
             margin-bottom: 20px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        /* Контейнер приложения */
         .app-container {
             max-width: 600px;
             margin: 0 auto;
             padding: 0 20px 20px;
         }
 
-        /* Карточки в стиле VTB */
         .card {
             background-color: var(--vtb-white);
             border-radius: 12px;
@@ -61,7 +51,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        /* Кнопки */
         .btn {
             background: var(--vtb-gradient);
             color: var(--vtb-white);
@@ -84,13 +73,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-secondary {
-            background: var(--vtb-white);
-            color: var(--vtb-blue);
-            border: 1px solid var(--vtb-blue);
-        }
-
-        /* Поля ввода */
         .form-control {
             width: 100%;
             padding: 14px 16px;
@@ -102,13 +84,6 @@
             transition: all 0.3s ease;
         }
 
-        .form-control:focus {
-            border-color: var(--vtb-blue);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 51, 160, 0.2);
-        }
-
-        /* Вкладки */
         .tab {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -118,23 +93,12 @@
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Баланс */
         .balance {
             font-size: 32px;
             font-weight: 700;
             color: var(--vtb-blue);
             text-align: center;
             margin: 20px 0;
-        }
-
-        /* Список операций */
-        .transaction-list {
-            margin-top: 15px;
         }
 
         .transaction-item {
@@ -145,12 +109,6 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s ease;
-        }
-
-        .transaction-item:hover {
-            transform: translateX(5px);
         }
 
         .income {
@@ -161,61 +119,13 @@
             border-left: 4px solid var(--vtb-red);
         }
 
-        .transaction-amount {
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .transaction-income {
-            color: var(--vtb-green);
-        }
-
-        .transaction-expense {
-            color: var(--vtb-red);
-        }
-
-        /* Настройки */
-        .settings-form {
-            background-color: var(--vtb-white);
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        /* Иконки */
-        .icon {
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 480px) {
-            .app-container {
-                padding: 0 15px 15px;
-            }
-
-            .btn {
-                padding: 12px 15px;
-            }
-
-            .balance {
-                font-size: 28px;
-            }
-        }
-
-        /* Дополнительные элементы */
         .back-btn {
             display: inline-block;
             margin-bottom: 15px;
             color: var(--vtb-blue);
             text-decoration: none;
             font-weight: 500;
-        }
-
-        .section-title {
-            color: var(--vtb-blue);
-            margin-bottom: 15px;
-            font-size: 18px;
-            font-weight: 500;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -225,184 +135,224 @@
     </div>
 
     <div class="app-container">
+        <!-- Главная вкладка -->
         <div id="main-tab" class="tab active">
             <div class="card">
                 <div class="balance">Баланс: <span id="balance">0 ₽</span></div>
-
-                <button class="btn" onclick="showTab('add-transaction')">
-                    Добавить операцию
-                </button>
-
-                <button class="btn" onclick="showTab('history')">
-                    История операций
-                </button>
-
-                <button class="btn btn-secondary" onclick="showTab('deposit')">
-                    Вклады и проценты
-                </button>
-
-                <button class="btn" onclick="showTab('settings')" style="margin-top: 20px;">
-                    Настройки
-                </button>
+                <button class="btn" id="add-transaction-btn">Добавить операцию</button>
+                <button class="btn" id="history-btn">История операций</button>
+                <button class="btn" id="deposit-btn">Вклады и проценты</button>
+                <button class="btn" id="settings-btn">Настройки</button>
             </div>
         </div>
 
-        <!-- Остальные вкладки остаются без изменений -->
-        <div id="add-transaction" class="tab">
-            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+        <!-- Добавление операции -->
+        <div id="add-transaction-tab" class="tab">
+            <div class="back-btn" id="back-from-add">← Назад</div>
             <div class="card">
-                <h2 class="section-title">Добавить операцию</h2>
-
+                <h2>Добавить операцию</h2>
                 <select class="form-control" id="type">
                     <option value="income">Доход</option>
                     <option value="expense">Расход</option>
                 </select>
-
                 <input type="number" class="form-control" id="amount" placeholder="Сумма">
-
                 <input type="text" class="form-control" id="category" placeholder="Категория">
-
-                <button class="btn" onclick="saveTransaction()">Сохранить</button>
+                <button class="btn" id="save-transaction-btn">Сохранить</button>
             </div>
         </div>
 
-        <div id="history" class="tab">
-            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+        <!-- История операций -->
+        <div id="history-tab" class="tab">
+            <div class="back-btn" id="back-from-history">← Назад</div>
             <div class="card">
-                <h2 class="section-title">История операций</h2>
-                <div id="transactions-list" class="transaction-list"></div>
+                <h2>История операций</h2>
+                <div id="transactions-list"></div>
             </div>
         </div>
 
-        <div id="deposit" class="tab">
-            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+        <!-- Вклады -->
+        <div id="deposit-tab" class="tab">
+            <div class="back-btn" id="back-from-deposit">← Назад</div>
             <div class="card">
-                <h2 class="section-title">Калькулятор вкладов</h2>
-
+                <h2>Калькулятор вкладов</h2>
                 <input type="number" class="form-control" id="deposit-amount" placeholder="Сумма вклада">
-
                 <input type="number" class="form-control" id="deposit-rate" placeholder="Годовая ставка (%)">
-
                 <input type="number" class="form-control" id="deposit-period" placeholder="Срок (мес.)">
-
-                <button class="btn" onclick="calculateDeposit()">Рассчитать</button>
-
-                <div id="deposit-result" style="margin-top: 20px; padding: 15px; background-color: var(--vtb-gray); border-radius: 8px;"></div>
+                <button class="btn" id="calculate-deposit-btn">Рассчитать</button>
+                <div id="deposit-result" style="margin-top: 20px;"></div>
             </div>
         </div>
 
-        <div id="settings" class="tab">
-            <a class="back-btn" onclick="showTab('main-tab')">← Назад</a>
+        <!-- Настройки -->
+        <div id="settings-tab" class="tab">
+            <div class="back-btn" id="back-from-settings">← Назад</div>
             <div class="card">
-                <h2 class="section-title">Настройки</h2>
-
+                <h2>Настройки</h2>
                 <input type="number" class="form-control" id="initial-balance" placeholder="Начальный баланс">
-
-                <button class="btn" onclick="saveSettings()">Сохранить настройки</button>
+                <button class="btn" id="save-settings-btn">Сохранить</button>
             </div>
         </div>
     </div>
+
     <script>
-        let user = null;
-        let initialBalance = 0;
         // Инициализация WebApp
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-        user = Telegram.WebApp.initDataUnsafe.user;
-        window.onload = function() {
-            const savedBalance = localStorage.getItem('initialBalance');
-            if (savedBalance) {
-                document.getElementById('initial-balance').value = savedBalance;
+
+        // Данные пользователя
+        const user = Telegram.WebApp.initDataUnsafe.user || { id: 12345 };
+
+        // Состояние приложения
+        let transactions = JSON.parse(localStorage.getItem(`transactions_${user.id}`)) || [];
+        let initialBalance = parseFloat(localStorage.getItem(`initialBalance_${user.id}`)) || 0;
+
+        // DOM элементы
+        const elements = {
+            tabs: {
+                main: document.getElementById('main-tab'),
+                addTransaction: document.getElementById('add-transaction-tab'),
+                history: document.getElementById('history-tab'),
+                deposit: document.getElementById('deposit-tab'),
+                settings: document.getElementById('settings-tab')
+            },
+            buttons: {
+                addTransaction: document.getElementById('add-transaction-btn'),
+                history: document.getElementById('history-btn'),
+                deposit: document.getElementById('deposit-btn'),
+                settings: document.getElementById('settings-btn'),
+                saveTransaction: document.getElementById('save-transaction-btn'),
+                calculateDeposit: document.getElementById('calculate-deposit-btn'),
+                saveSettings: document.getElementById('save-settings-btn'),
+                backFromAdd: document.getElementById('back-from-add'),
+                backFromHistory: document.getElementById('back-from-history'),
+                backFromDeposit: document.getElementById('back-from-deposit'),
+                backFromSettings: document.getElementById('back-from-settings')
+            },
+            inputs: {
+                type: document.getElementById('type'),
+                amount: document.getElementById('amount'),
+                category: document.getElementById('category'),
+                depositAmount: document.getElementById('deposit-amount'),
+                depositRate: document.getElementById('deposit-rate'),
+                depositPeriod: document.getElementById('deposit-period'),
+                initialBalance: document.getElementById('initial-balance')
+            },
+            displays: {
+                balance: document.getElementById('balance'),
+                transactionsList: document.getElementById('transactions-list'),
+                depositResult: document.getElementById('deposit-result')
             }
-            // Остальной код инициализации...
         };
-        // Загрузка баланса
 
-        async function loadBalance() {
-            const response = await fetch(`http://localhost:5000/api/transactions?user_id=${user.id}`);
-            const transactions = await response.json();
-
-            // Загружаем начальный баланс из localStorage
-            const savedBalance = localStorage.getItem('initialBalance');
-            initialBalance = savedBalance ? parseFloat(savedBalance) : 0;
-
-            const calculatedBalance = transactions.reduce((acc, t) =>
-                t.type === 'income' ? acc + t.amount : acc - t.amount, initialBalance);
-
-            document.getElementById('balance').textContent = `${calculatedBalance.toFixed(2)} ₽`;
-        }
-
-        // Показ вкладок
+        // Функции
         function showTab(tabId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            if(tabId === 'history') loadHistory();
+            Object.values(elements.tabs).forEach(tab => {
+                tab.classList.remove('active');
+            });
+            elements.tabs[tabId].classList.add('active');
         }
 
-        // Сохранение операции
-        async function saveTransaction() {
+        function calculateBalance() {
+            const balance = transactions.reduce((total, transaction) => {
+                return transaction.type === 'income'
+                    ? total + transaction.amount
+                    : total - transaction.amount;
+            }, initialBalance);
+
+            elements.displays.balance.textContent = `${balance.toFixed(2)} ₽`;
+            return balance;
+        }
+
+        function renderTransactions() {
+            elements.displays.transactionsList.innerHTML = transactions
+                .map(transaction => `
+                    <div class="transaction-item ${transaction.type}">
+                        <div>
+                            <strong>${transaction.category}</strong><br>
+                            <small>${new Date(transaction.date).toLocaleDateString()}</small>
+                        </div>
+                        <div style="color: ${transaction.type === 'income' ? 'var(--vtb-green)' : 'var(--vtb-red)'}">
+                            ${transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)} ₽
+                        </div>
+                    </div>
+                `)
+                .join('');
+        }
+
+        function saveTransaction() {
             const transaction = {
-                user_id: user.id,
-                amount: parseFloat(document.getElementById('amount').value),
-                type: document.getElementById('type').value,
-                category: document.getElementById('category').value
+                type: elements.inputs.type.value,
+                amount: parseFloat(elements.inputs.amount.value),
+                category: elements.inputs.category.value,
+                date: new Date().toISOString()
             };
 
-            await fetch('http://localhost:5000/api/transaction', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(transaction)
-            });
+            if (!transaction.amount || !transaction.category) {
+                alert('Заполните все поля!');
+                return;
+            }
 
-            loadBalance();
-            showTab('main-tab');
+            transactions.push(transaction);
+            localStorage.setItem(`transactions_${user.id}`, JSON.stringify(transactions));
+
+            // Очистка полей
+            elements.inputs.amount.value = '';
+            elements.inputs.category.value = '';
+
+            calculateBalance();
+            showTab('main');
         }
 
-        // Загрузка истории
-        async function loadHistory() {
-            const response = await fetch(`http://localhost:5000/api/transactions?user_id=${user.id}`);
-            const transactions = await response.json();
-
-            const html = transactions.map(t => `
-                <div style="margin: 10px; padding: 10px; border: 1px solid #ccc;">
-                    <b>${t.type === 'income' ? '+' : '-'}${t.amount} ₽</b><br>
-                    Категория: ${t.category}<br>
-                    Дата: ${new Date(t.date).toLocaleDateString()}
-                </div>
-            `).join('');
-
-            document.getElementById('transactions-list').innerHTML = html;
-        }
-
-        // Расчет вклада
         function calculateDeposit() {
-            const amount = parseFloat(document.getElementById('deposit-amount').value);
-            const rate = parseFloat(document.getElementById('deposit-rate').value);
-            const period = parseFloat(document.getElementById('deposit-period').value);
+            const amount = parseFloat(elements.inputs.depositAmount.value);
+            const rate = parseFloat(elements.inputs.depositRate.value);
+            const period = parseFloat(elements.inputs.depositPeriod.value);
 
-            const result = amount * Math.pow(1 + (rate/100)/12, period);
-            document.getElementById('deposit-result').innerHTML = `
-                Итоговая сумма: ${result.toFixed(2)} ₽<br>
-                Доход: ${(result - amount).toFixed(2)} ₽
+            if (!amount || !rate || !period) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            const monthlyRate = rate / 100 / 12;
+            const total = amount * Math.pow(1 + monthlyRate, period);
+            const profit = total - amount;
+
+            elements.displays.depositResult.innerHTML = `
+                <p><strong>Итоговая сумма:</strong> ${total.toFixed(2)} ₽</p>
+                <p><strong>Доход:</strong> ${profit.toFixed(2)} ₽</p>
             `;
         }
-        function saveSettings() {
-            initialBalance = parseFloat(document.getElementById('initial-balance').value) || 0;
-            localStorage.setItem('initialBalance', initialBalance);
-            await fetch('http://localhost:5000/api/settings', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    user_id: user.id,
-                    initial_balance: initialBalance
-                })
-            });
 
-            showTab('main-tab');
-            loadBalance();
+        function saveSettings() {
+            initialBalance = parseFloat(elements.inputs.initialBalance.value) || 0;
+            localStorage.setItem(`initialBalance_${user.id}`, initialBalance.toString());
+            calculateBalance();
+            showTab('main');
         }
-        // Первоначальная загрузка
-        loadBalance();
+
+        // Обработчики событий
+        elements.buttons.addTransaction.addEventListener('click', () => showTab('addTransaction'));
+        elements.buttons.history.addEventListener('click', () => {
+            renderTransactions();
+            showTab('history');
+        });
+        elements.buttons.deposit.addEventListener('click', () => showTab('deposit'));
+        elements.buttons.settings.addEventListener('click', () => {
+            elements.inputs.initialBalance.value = initialBalance;
+            showTab('settings');
+        });
+
+        elements.buttons.saveTransaction.addEventListener('click', saveTransaction);
+        elements.buttons.calculateDeposit.addEventListener('click', calculateDeposit);
+        elements.buttons.saveSettings.addEventListener('click', saveSettings);
+
+        elements.buttons.backFromAdd.addEventListener('click', () => showTab('main'));
+        elements.buttons.backFromHistory.addEventListener('click', () => showTab('main'));
+        elements.buttons.backFromDeposit.addEventListener('click', () => showTab('main'));
+        elements.buttons.backFromSettings.addEventListener('click', () => showTab('main'));
+
+        // Инициализация
+        calculateBalance();
     </script>
 </body>
 </html>
